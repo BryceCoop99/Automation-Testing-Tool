@@ -1,23 +1,45 @@
-import _tkinter as tk
+import time
+import _tkinter as Tk
 from tkinter import *
 from selenium import webdriver
-# from openpyxl import Workbook, load_workbook
 
 PATH = "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
-# ExcelFileName = 'AutomationTest.xlsx'
-# wb = load_workbook(ExcelFileName)
 
 
-def run_student():
-    global PATH, driver
+def getUsername():
+    enteredUsername = username.get()
+    return enteredUsername
+
+
+def getPassword():
+    enteredPassword = password.get()
+    return enteredPassword
+
+
+def openLoginPage():
+    driver.get("https://gmetrix.net/")
+    driver.implicitly_wait(10)
+
+
+def sendLoginInfo(uid, pw):
+    usernameBox = driver.find_element_by_id("body_UsernameTxtBox")
+    usernameBox.clear()
+    usernameBox.send_keys(uid)
+    pwBox = driver.find_element_by_id("body_PasswordTxtBox")
+    pwBox.clear()
+    pwBox.send_keys(pw)
+    driver.find_element_by_id("body_signInButton").click()
+
+
+# Main entry
+def startTest():
     driver = webdriver.Chrome(PATH)
-    driver.get("https://gmetrix.net")
-    driver.maximize_window()
+    openLoginPage()
+    sendLoginInfo(getUsername(), getPassword())
+    time.sleep(10)
+    driver.quit()
 
-
-def show():
-    PasswordInput.configure(show="")
-    check.configure(command=show, text="hide password")
+# Hide the password
 
 
 def hide():
@@ -27,7 +49,7 @@ def hide():
 
 myApp = Tk()
 
-myApp.title = "Automation Testing"
+myApp.title = ("Automation Testing")
 myApp.geometry("1000x800")
 
 # Create background image and apply it to the window
@@ -52,13 +74,13 @@ entryFrame.place(x=75, y=70)
 usernameLabel = Label(entryFrame, font=("Verdana bold", 10),
                       text="Username:", bg="gray", fg="white")
 usernameLabel.grid(row=1, column=1, padx=20)
-usernameInput = Entry(entryFrame, text="Username")
-usernameInput.grid(row=1, column=2, padx=20)
+username = Entry(entryFrame, text="Username")
+username.grid(row=1, column=2, padx=20)
 passwordLabel = Label(entryFrame, font=("Verdana bold", 10),
                       text="Password:", bg="gray", fg="white")
 passwordLabel.grid(row=2, column=1, padx=20)
-passwordInput = Entry(entryFrame, text="Password")
-passwordInput.grid(row=2, column=2, padx=20)
+password = Entry(entryFrame, text="Password")
+password.grid(row=2, column=2, padx=20)
 
 # Create server Buttons for the menuFrame
 liveButton = Button(menuFrame, text="Live", state=DISABLED, padx=56)
@@ -78,7 +100,7 @@ manageButton.grid(row=2, column=2, pady=(30, 0))
 
 # Create button to run the test
 startButton = Button(menuFrame, text="Start", fg="black", bg="#00916E",
-                     font=("Verdana bold", 10), padx=50)
+                     font=("Verdana bold", 10), padx=50, command=startTest)
 startButton.grid(row=3, column=1, pady=(50, 10))
 # Exit button to exit the program
 exitButton = Button(menuFrame, text="Exit", fg="black", bg="#FA003F",
@@ -87,4 +109,5 @@ exitButton.grid(row=3, column=2, pady=(50, 10))
 
 
 myApp.mainloop()
+
 
